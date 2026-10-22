@@ -1,0 +1,337 @@
+{
+  "schema_version": 1,
+  "scope": "Recovered paper-era model, data and configuration records.",
+  "models": {
+    "1.7b": {
+      "repo_id": "Qwen/Qwen3-1.7B",
+      "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+      "file_sha256": {
+        "config.json": "1ddb5b89ebc90dcb417a45c213d818577e65976454d29385c8f6140771d95197",
+        "model-00001-of-00002.safetensors": "169ad53ec313c3a34b06c0809216e4fc072cce444a5d4ff2b59690d064130ed5",
+        "model-00002-of-00002.safetensors": "912becff8d60672aa8628ef08c05898d9adf17c2ad4ae3caf99b065622fdeff9",
+        "model.safetensors.index.json": "0d660e94b165eb912669a5249dff44b83188c4777a07ddb9611fb78d91b0578d",
+        "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+        "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101"
+      },
+      "evidence_scope": "Inventoried dense snapshot; this alone does not link every selected paper checkpoint to its calibration input."
+    },
+    "4b": {
+      "repo_id": "Qwen/Qwen3-4B",
+      "revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+      "file_sha256": {
+        "model.safetensors.index.json": "6dc0981b8829fead746441f68f38f24c5ca4a3a66351f652c26c6df0efc43ab2",
+        "config.json": "8ba006f74fecfaaeb392872a60f4a480e7ec9860153d2e1b769ec81f9a147f8a",
+        "merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+        "generation_config.json": "2325da0f15bb848e018c5ae071b7943332e9f871d6b60e2ed22ca97d4cb993d2",
+        "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101",
+        "vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+        "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+        "model-00003-of-00003.safetensors": "e4bf436957184f4eeb86a80e9db394503f1f56446b2e6b7edeac5b81470f4ca1",
+        "model-00002-of-00003.safetensors": "6cd087b316306a68c562436b5492edbcf6e16c6dba3a1308279caa5a58e21ca5",
+        "model-00001-of-00003.safetensors": "328a91d3122359d5547f9d79521205bc0a46e1f79a792dfe650e99fc2d651223"
+      },
+      "evidence_scope": "Inventoried dense snapshot; this alone does not link every selected paper checkpoint to its calibration input."
+    },
+    "8b": {
+      "repo_id": "Qwen/Qwen3-8B",
+      "revision": "b968826d9c46dd6066d109eabc6255188de91218",
+      "file_sha256": {
+        "config.json": "f7c4eadfbbf522470667b797a3c89be2524832d2d599797248dc304fff447c30",
+        "model-00001-of-00005.safetensors": "31d6a825ae35f11fb85b195b4c42c146c051e446433125a215336abdf95cbf5f",
+        "model-00002-of-00005.safetensors": "5991236cea6fe21f3d43cab0f0e84448734fbbe0789816202989f2ddc9d18282",
+        "model-00003-of-00005.safetensors": "c5185c4794be2d8a9784d5753c9922db38df478ce11f9ed0b415b7304d896836",
+        "model-00004-of-00005.safetensors": "b5ee7de71fbf17db3d5704e0c8f2bc7d005ca9e1d7ca2aeb19827b0cfcaa917a",
+        "model-00005-of-00005.safetensors": "20c2d6366ab85c90786ccdd829cd2b9e7d30ef3b2ebbb998280e7e4014b542ff",
+        "model.safetensors.index.json": "f9fdbcb91c23971c13ec5d5f2573d2349e8f61f2f049371ec699281748fdb1bc",
+        "tokenizer.json": "aeb13307a71acd8fe81861d94ad54ab689df773318809eed3cbe794b4492dae4",
+        "tokenizer_config.json": "d5d09f07b48c3086c508b30d1c9114bd1189145b74e982a265350c923acd8101"
+      },
+      "evidence_scope": "Inventoried dense snapshot; this alone does not link every selected paper checkpoint to its calibration input."
+    }
+  },
+  "calibration_tokens": {
+    "file": "train_tokens.jsonl.gz",
+    "sha256": "edb84ec50183ba2fdb5a6080eb178879c4880c97d44041ac086956cc77ac697e",
+    "windows": 4096,
+    "tokens_per_window": 2048,
+    "scope": "Archived original 8B calibration token pool, later reused in experiments. Per-cell calibration pool and model linkage is not established for all six paper cells."
+  },
+  "opd_data": {
+    "prepared_files": {
+      "train.parquet": {
+        "sha256": "c3e991b149c471dd078ca97a6c2d4b25e41396e37757b7fa4d697609939b824d",
+        "bytes": 31928779,
+        "rows": 51200
+      },
+      "validation.parquet": {
+        "sha256": "1c3d5b3c3fdb05b946749536e62046d3ac143188bf4ef8994a3ecb28f6bcef90",
+        "bytes": 164962,
+        "rows": 256
+      }
+    },
+    "original_prompt_file_hashes": {
+      "original_train_sha256": "e8b0bc34c6fd8f9e0540aef3131c764c34b1a8ade178b4f5c7315b6a84fb52ca",
+      "original_validation_sha256": "447d415ff629d24c6c25417a7ceaf996a9a1e8d6664794cdfe8905516ad4a2b2"
+    },
+    "prompts": 25600,
+    "appearances": 2,
+    "validation_prompts": 256,
+    "seed": 42,
+    "schedule": "1-50:4096,51-100:8192,101-400:16384",
+    "scope": "Prepared file hashes recomputed locally and matched all three archived configs listed below. Original prompt-file hashes are recorded provenance, not a fresh check of the original prompt files."
+  },
+  "archived_configs": {
+    "1p7b_w2": {
+      "archived_config_sha256": "51958dc841b325dbdeee10dfeb81ceed848ee27b29970837131f2dbea57651ac",
+      "selected_fields": {
+        "data.train_batch_size": 128,
+        "data.val_batch_size": 64,
+        "data.max_prompt_length": 4096,
+        "data.max_response_length": 16384,
+        "data.shuffle": false,
+        "data.seed": 42,
+        "actor_rollout_ref.model.quant_type": {
+          "status": "not recorded in this config"
+        },
+        "actor_rollout_ref.model.q_group_size": {
+          "status": "not recorded in this config"
+        },
+        "actor_rollout_ref.model.train_mode": {
+          "status": "not recorded in this config"
+        },
+        "actor_rollout_ref.actor.optim": {
+          "_target_": "verl.workers.config.FSDPOptimizerConfig",
+          "optimizer": "AdamW",
+          "optimizer_impl": "torch.optim",
+          "lr": 1e-06,
+          "lr_warmup_steps_ratio": 0.0,
+          "total_training_steps": -1,
+          "weight_decay": 0.01,
+          "lr_warmup_steps": 0,
+          "betas": [
+            0.9,
+            0.999
+          ],
+          "clip_grad": 1.0,
+          "min_lr_ratio": 0.0,
+          "num_cycles": 0.5,
+          "lr_scheduler_type": "constant",
+          "zero_indexed_step": true,
+          "warmup_style": null,
+          "override_optimizer_config": null
+        },
+        "actor_rollout_ref.actor.ppo_mini_batch_size": 128,
+        "actor_rollout_ref.rollout.temperature": 1.0,
+        "actor_rollout_ref.rollout.top_k": -1,
+        "actor_rollout_ref.rollout.top_p": 1,
+        "actor_rollout_ref.rollout.n": 1,
+        "trainer.total_training_steps": 400,
+        "trainer.n_gpus_per_node": 8,
+        "trainer.save_freq": 50,
+        "trainer.test_freq": 50
+      },
+      "adapter": {
+        "bits": 2,
+        "group_size": 128,
+        "dynamic_kl": {
+          "epsilon": 1e-08,
+          "mass_tolerance": 1e-05,
+          "chunk_size": 128
+        },
+        "r8_schedule": {
+          "version": 1,
+          "schedule": "1-50:4096,51-100:8192,101-400:16384",
+          "validation_cap": 16384
+        }
+      },
+      "teacher": {
+        "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e",
+        "teacher_topk": 20,
+        "student_topk": 20,
+        "timeout": 1800
+      },
+      "data_hashes": {
+        "manifest_sha256": "053240e6047954031897cd173b0d17bd325d767a490916631bf79571b24e4bca",
+        "train_sha256": "c3e991b149c471dd078ca97a6c2d4b25e41396e37757b7fa4d697609939b824d",
+        "validation_sha256": "1c3d5b3c3fdb05b946749536e62046d3ac143188bf4ef8994a3ecb28f6bcef90",
+        "original_train_sha256": "e8b0bc34c6fd8f9e0540aef3131c764c34b1a8ade178b4f5c7315b6a84fb52ca",
+        "original_validation_sha256": "447d415ff629d24c6c25417a7ceaf996a9a1e8d6664794cdfe8905516ad4a2b2"
+      },
+      "scope": "Whitelisted fields from archived resolved config; not a runnable replacement for the full original config."
+    },
+    "4b_w2_resume250": {
+      "archived_config_sha256": "db77c983329ed9a7346a0ab57b38a18e640fc34f7b9a7cb1c2eed5bd9208823c",
+      "selected_fields": {
+        "data.train_batch_size": 128,
+        "data.val_batch_size": 64,
+        "data.max_prompt_length": 4096,
+        "data.max_response_length": 16384,
+        "data.shuffle": false,
+        "data.seed": 42,
+        "actor_rollout_ref.model.quant_type": {
+          "status": "not recorded in this config"
+        },
+        "actor_rollout_ref.model.q_group_size": {
+          "status": "not recorded in this config"
+        },
+        "actor_rollout_ref.model.train_mode": {
+          "status": "not recorded in this config"
+        },
+        "actor_rollout_ref.actor.optim": {
+          "_target_": "verl.workers.config.FSDPOptimizerConfig",
+          "optimizer": "AdamW",
+          "optimizer_impl": "torch.optim",
+          "lr": 1e-06,
+          "lr_warmup_steps_ratio": 0.0,
+          "total_training_steps": -1,
+          "weight_decay": 0.01,
+          "lr_warmup_steps": 0,
+          "betas": [
+            0.9,
+            0.999
+          ],
+          "clip_grad": 1.0,
+          "min_lr_ratio": 0.0,
+          "num_cycles": 0.5,
+          "lr_scheduler_type": "constant",
+          "zero_indexed_step": true,
+          "warmup_style": null,
+          "override_optimizer_config": null
+        },
+        "actor_rollout_ref.actor.ppo_mini_batch_size": 128,
+        "actor_rollout_ref.rollout.temperature": 1.0,
+        "actor_rollout_ref.rollout.top_k": -1,
+        "actor_rollout_ref.rollout.top_p": 1,
+        "actor_rollout_ref.rollout.n": 1,
+        "trainer.total_training_steps": 400,
+        "trainer.n_gpus_per_node": 4,
+        "trainer.save_freq": 50,
+        "trainer.test_freq": 50
+      },
+      "adapter": {
+        "bits": 2,
+        "group_size": 128,
+        "dynamic_kl": {
+          "epsilon": 1e-08,
+          "mass_tolerance": 1e-05,
+          "chunk_size": 128
+        },
+        "r8_schedule": {
+          "version": 1,
+          "schedule": "1-50:4096,51-100:8192,101-400:16384",
+          "validation_cap": 16384
+        }
+      },
+      "teacher": {
+        "revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+        "teacher_topk": 20,
+        "student_topk": 20,
+        "timeout": 1800
+      },
+      "data_hashes": {
+        "manifest_sha256": "053240e6047954031897cd173b0d17bd325d767a490916631bf79571b24e4bca",
+        "train_sha256": "c3e991b149c471dd078ca97a6c2d4b25e41396e37757b7fa4d697609939b824d",
+        "validation_sha256": "1c3d5b3c3fdb05b946749536e62046d3ac143188bf4ef8994a3ecb28f6bcef90",
+        "original_train_sha256": "e8b0bc34c6fd8f9e0540aef3131c764c34b1a8ade178b4f5c7315b6a84fb52ca",
+        "original_validation_sha256": "447d415ff629d24c6c25417a7ceaf996a9a1e8d6664794cdfe8905516ad4a2b2"
+      },
+      "scope": "Whitelisted fields from archived resolved config; not a runnable replacement for the full original config.",
+      "resume_step": 250
+    },
+    "4b_w3": {
+      "archived_config_sha256": "1eec4458d5dcad88940e198bdf097da102e15a2612f92f2295b7726c3c84b9ef",
+      "selected_fields": {
+        "data.train_batch_size": 128,
+        "data.val_batch_size": 64,
+        "data.max_prompt_length": 4096,
+        "data.max_response_length": 16384,
+        "data.shuffle": false,
+        "data.seed": 42,
+        "actor_rollout_ref.model.quant_type": {
+          "status": "not recorded in this config"
+        },
+        "actor_rollout_ref.model.q_group_size": {
+          "status": "not recorded in this config"
+        },
+        "actor_rollout_ref.model.train_mode": {
+          "status": "not recorded in this config"
+        },
+        "actor_rollout_ref.actor.optim": {
+          "_target_": "verl.workers.config.FSDPOptimizerConfig",
+          "optimizer": "AdamW",
+          "optimizer_impl": "torch.optim",
+          "lr": 1e-06,
+          "lr_warmup_steps_ratio": 0.0,
+          "total_training_steps": -1,
+          "weight_decay": 0.01,
+          "lr_warmup_steps": 0,
+          "betas": [
+            0.9,
+            0.999
+          ],
+          "clip_grad": 1.0,
+          "min_lr_ratio": 0.0,
+          "num_cycles": 0.5,
+          "lr_scheduler_type": "constant",
+          "zero_indexed_step": true,
+          "warmup_style": null,
+          "override_optimizer_config": null
+        },
+        "actor_rollout_ref.actor.ppo_mini_batch_size": 128,
+        "actor_rollout_ref.rollout.temperature": 1.0,
+        "actor_rollout_ref.rollout.top_k": -1,
+        "actor_rollout_ref.rollout.top_p": 1,
+        "actor_rollout_ref.rollout.n": 1,
+        "trainer.total_training_steps": 400,
+        "trainer.n_gpus_per_node": 4,
+        "trainer.save_freq": 50,
+        "trainer.test_freq": 50
+      },
+      "adapter": {
+        "bits": 3,
+        "group_size": 128,
+        "dynamic_kl": {
+          "epsilon": 1e-08,
+          "mass_tolerance": 1e-05,
+          "chunk_size": 128
+        },
+        "r8_schedule": {
+          "version": 1,
+          "schedule": "1-50:4096,51-100:8192,101-400:16384",
+          "validation_cap": 16384
+        }
+      },
+      "teacher": {
+        "revision": "1cfa9a7208912126459214e8b04321603b3df60c",
+        "teacher_topk": 20,
+        "student_topk": 20,
+        "timeout": 1800
+      },
+      "data_hashes": {
+        "manifest_sha256": "053240e6047954031897cd173b0d17bd325d767a490916631bf79571b24e4bca",
+        "train_sha256": "c3e991b149c471dd078ca97a6c2d4b25e41396e37757b7fa4d697609939b824d",
+        "validation_sha256": "1c3d5b3c3fdb05b946749536e62046d3ac143188bf4ef8994a3ecb28f6bcef90",
+        "original_train_sha256": "e8b0bc34c6fd8f9e0540aef3131c764c34b1a8ade178b4f5c7315b6a84fb52ca",
+        "original_validation_sha256": "447d415ff629d24c6c25417a7ceaf996a9a1e8d6664794cdfe8905516ad4a2b2"
+      },
+      "scope": "Whitelisted fields from archived resolved config; not a runnable replacement for the full original config."
+    }
+  },
+  "8b_w3": {
+    "status": "Prior config comparison and selected-checkpoint record available; full original resolved config absent from this local inventory.",
+    "selected_step": 300,
+    "comparison_evidence_sha256": "b25f9f7f3a446863e4009903556ef05e62636734d6a31fcc0da81d2583c46a9a",
+    "selection_evidence_sha256": "8c440552cd5ca029ca8214e9d15d3a576a300b0acbd89f171de4047537942267"
+  },
+  "outstanding": [
+    "Selected 1.7B W3 and superseding 8B W2 original resolved configs, source snapshots and checkpoint lineage.",
+    "Complete per-cell calibration input membership, dense-model revision and latent-checkpoint linkage.",
+    "Original manually reviewed training selection membership if regenerating the exact prompt pool rather than reusing verified files.",
+    "Full original config availability for 8B W3 and selected-checkpoint/export/result hash chain for all six cells."
+  ],
+  "notes": [
+    "Original archived 4B configs allow 400 updates; the paper selects step 300. These are distinct facts.",
+    "This inventory does not replace original dataset artifacts, native checkpoints or complete multi-seed evaluation receipts.",
+    "No later corrected float-zero scores or training configs are used as paper reproduction evidence."
+  ]
+}

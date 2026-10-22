@@ -1,0 +1,4 @@
+FROM python:3.12.13-slim
+RUN pip install --no-cache-dir numpy==2.2.6 && pip download --no-deps evalscope==1.5.1 -d /opt/scorer
+ENV OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 HOME=/tmp
+WORKDIR /work

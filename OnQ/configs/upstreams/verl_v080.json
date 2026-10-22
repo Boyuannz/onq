@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/verl-project/verl.git",
+  "commit": "7aed6b230776f963fa09509c10d9c3a767d1102c",
+  "upstream_repository": "https://github.com/verl-project/verl.git",
+  "upstream_commit": "7aed6b230776f963fa09509c10d9c3a767d1102c",
+  "release": "v0.8.0",
+  "scope": "official pinned veRL plus bundled reviewed rollout transfer backport",
+  "status": "source-hash-verified",
+  "patch": "OnQ/integrations/verl_v080/backports/verl_7873.patch"
+}

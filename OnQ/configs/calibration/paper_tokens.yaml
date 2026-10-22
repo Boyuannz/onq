@@ -1,0 +1,1 @@
+{"train_size": 4096, "val_size": 0, "training_seqlen": 2048, "batch_size": 2, "epochs": 2, "seed": 2, "quant_lr": 0.0001}

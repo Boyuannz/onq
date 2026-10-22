@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "OnQ"
+version = "0.1.0"
+description = "OnQ calibration and native veRL on-policy distillation"
+requires-python = ">=3.10"
+
+[project.urls]
+Homepage = "https://github.com/Boyuannz/onq"
+Paper = "https://arxiv.org/abs/2610.29378"
+Models = "https://huggingface.co/collections/Ryannnnnnz/onq-6acf370a0ea75a4cf7f5c2f9"
+
+[project.scripts]
+onq = "OnQ.__main__:main"
+
+[project.optional-dependencies]
+eval = ["evalscope==1.5.1", "evalplus==0.3.1", "openai"]
+train = ["safetensors", "accelerate", "codetiming", "datasets", "dill", "hydra-core", "matplotlib", "numpy", "pandas", "peft", "pyarrow>=15.0.0", "pybind11", "pylatexenc", "ray>=2.10", "tensordict>=0.6", "torchdata==0.11.0", "transformers", "vllm>=0.10.2", "wandb"]
+
+[tool.setuptools.package-dir]
+OnQ = "OnQ"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["OnQ", "OnQ.cli*", "OnQ.deployment*", "OnQ.config*", "OnQ.quantization*", "OnQ.calibration*", "OnQ.scripts*", "OnQ.integrations*", "OnQ.evaluation*"]
+exclude = ["OnQ.calibration.upstream*"]
+
+[tool.setuptools.package-data]
+OnQ = ["provenance/*.json", "deployment/*.in", "deployment/*.lock", "configs/**/*.yaml", "scripts/**/*.sh", "scripts/data/sampling_recipe.json", "scripts/data/requirements.txt", "evaluation/evalscope/Dockerfile.*", "calibration/upstream/**/*.py", "integrations/verl_v080/backports/*.json", "integrations/verl_v080/backports/*.patch"]

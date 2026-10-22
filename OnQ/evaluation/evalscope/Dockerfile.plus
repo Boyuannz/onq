@@ -1,0 +1,4 @@
+FROM python:3.12.13-slim
+RUN pip install --no-cache-dir evalplus==0.3.1 numpy==2.2.6
+ENV HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 HOME=/tmp EVALPLUS_CACHE_DIR=/tmp/evalplus
+WORKDIR /work

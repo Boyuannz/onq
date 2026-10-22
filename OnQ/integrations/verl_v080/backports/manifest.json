@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "base_commit": "7aed6b230776f963fa09509c10d9c3a767d1102c",
+  "upstream_pr": "https://github.com/verl-project/verl/pull/7873",
+  "upstream_merge_commit": "e488469bbf5d62bd921ca41ff746ad90768d2ff3",
+  "scope": "Pinned vLLM bucket transfer and FSDP cleanup only; retain single-argument receiver callback and existing device guards. Other training engines are not backported.",
+  "patch": "verl_7873.patch",
+  "patch_sha256": "879a3c8a5fb9ddcd15a086700eb000f101d87a26e02d2ccee1c7cfbd5a329528",
+  "files": {
+    "verl/workers/rollout/vllm_rollout/bucketed_weight_transfer.py": {
+      "before": "83cb67d6911206d6456e8581828882ff622a254b6ba78ad82b9802d876083c86",
+      "after": "fc5e06dec1cc9bd943909102436c79cdb063553b0b23b0775a618dcf2de92611"
+    },
+    "verl/workers/engine_workers.py": {
+      "before": "721f866442475a08768854b58176a4dcd99de4564809e3d067dced7cba1122db",
+      "after": "031e6df5941f4d5d61da6c923082d95290444ea168f2edd50e6226c8bf010827"
+    },
+    "verl/workers/engine/fsdp/transformer_impl.py": {
+      "before": "b4f6243471f22c08dbfa472d13f708e8de609705ecff13f23713258160cf7902",
+      "after": "8b7bccdd55bc90148fecb3d2ec816e43bd3b9a8c3b1cdb49e465f01e5993972e"
+    }
+  }
+}

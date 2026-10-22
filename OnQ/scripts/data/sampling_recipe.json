@@ -1,0 +1,247 @@
+{
+ "description": "Default composition = released OnQ (OPD 25,600 train + 256 val prompts; Block-AP 4,096 x 2,048-token windows).",
+ "tokenizer": {
+  "repo": "Qwen/Qwen3-1.7B",
+  "revision": "70d244cc86ccca08cf5af4e1e306ecf908b1ad5e"
+ },
+ "opd": {
+  "max_prompt_tokens": 4096,
+  "sources": [
+   {
+    "name": "omr_cot",
+    "kind": "math",
+    "domain": "math",
+    "train": 7680,
+    "val": 77,
+    "dataset": {
+     "repo": "nvidia/OpenMathReasoning",
+     "revision": "d3d08664755704f422af97d43a7ff0ded4bd95df",
+     "prefix": "data/cot-",
+     "columns": [
+      "problem"
+     ]
+    }
+   },
+   {
+    "name": "osr2",
+    "kind": "science",
+    "domain": "science",
+    "train": 3840,
+    "val": 38,
+    "dataset": {
+     "repo": "nvidia/OpenScienceReasoning-2",
+     "revision": "174b02c9cdf231f220765b2a1d5ece4550921894",
+     "prefix": "train/",
+     "columns": [
+      "input"
+     ]
+    }
+   },
+   {
+    "name": "ocr2",
+    "kind": "code",
+    "domain": "code",
+    "train": 7680,
+    "val": 77,
+    "dataset": {
+     "repo": "nvidia/OpenCodeReasoning-2",
+     "revision": "eadf535931451525f3e5621d0f960c240bc62fd9",
+     "prefix": "train/python/",
+     "columns": [
+      "dataset",
+      "split",
+      "index",
+      "question_id"
+     ]
+    }
+   },
+   {
+    "name": "tulu_wildchat",
+    "kind": "chat",
+    "domain": "general",
+    "train": 2240,
+    "val": 23,
+    "dataset": {
+     "repo": "allenai/tulu-3-sft-mixture",
+     "revision": "b14afda60f1bbebe55d5d2fa1e4df5042f97f8be",
+     "prefix": "data/train-",
+     "columns": [
+      "id",
+      "messages",
+      "source"
+     ]
+    },
+    "cohort": {
+     "column": "source",
+     "values": [
+      "ai2-adapt-dev/tulu_v3.9_wildchat_100k"
+     ]
+    },
+    "wildchat": true
+   },
+   {
+    "name": "tulu_no_robots",
+    "kind": "chat",
+    "domain": "general",
+    "train": 1440,
+    "val": 14,
+    "dataset": {
+     "repo": "allenai/tulu-3-sft-mixture",
+     "revision": "b14afda60f1bbebe55d5d2fa1e4df5042f97f8be",
+     "prefix": "data/train-",
+     "columns": [
+      "id",
+      "messages",
+      "source"
+     ]
+    },
+    "cohort": {
+     "column": "source",
+     "values": [
+      "ai2-adapt-dev/no_robots_converted"
+     ]
+    }
+   },
+   {
+    "name": "tulu_flan",
+    "kind": "chat",
+    "domain": "general",
+    "train": 1440,
+    "val": 14,
+    "dataset": {
+     "repo": "allenai/tulu-3-sft-mixture",
+     "revision": "b14afda60f1bbebe55d5d2fa1e4df5042f97f8be",
+     "prefix": "data/train-",
+     "columns": [
+      "id",
+      "messages",
+      "source"
+     ]
+    },
+    "cohort": {
+     "column": "source",
+     "values": [
+      "ai2-adapt-dev/flan_v2_converted"
+     ]
+    }
+   },
+   {
+    "name": "if_multi",
+    "kind": "if",
+    "domain": "general",
+    "category": "instruction_following",
+    "train": 1280,
+    "val": 13,
+    "dataset": {
+     "repo": "allenai/IF_multi_constraints_upto5",
+     "revision": "2e3a77407b7fce69f95b248d64a884e3ae1c2423",
+     "prefix": "data/train-",
+     "columns": [
+      "messages",
+      "key",
+      "constraint",
+      "ground_truth"
+     ]
+    }
+   }
+  ]
+ },
+ "blockap": {
+  "window_length": 2048,
+  "sources": [
+   {
+    "name": "general_dolci",
+    "kind": "chat",
+    "domain": "general",
+    "windows": 819,
+    "dataset": {
+     "repo": "allenai/Dolci-Think-SFT-7B",
+     "revision": "72ec0fe32428bada1ec686a9168a0681eecd2094",
+     "prefix": "data/train-",
+     "columns": [
+      "id",
+      "messages",
+      "dataset_source"
+     ]
+    },
+    "cohort": {
+     "column": "dataset_source",
+     "values": [
+      "allenai/tulu_v3.9_wildchat_100k_english-r1-final-content-filtered",
+      "allenai/wildchat-r1-p2-repetition-filter"
+     ]
+    }
+   },
+   {
+    "name": "if_dolci",
+    "kind": "if",
+    "domain": "instruction",
+    "windows": 205,
+    "dataset": {
+     "repo": "allenai/Dolci-Think-SFT-7B",
+     "revision": "72ec0fe32428bada1ec686a9168a0681eecd2094",
+     "prefix": "data/train-",
+     "columns": [
+      "id",
+      "messages",
+      "dataset_source"
+     ]
+    },
+    "cohort": {
+     "column": "dataset_source",
+     "values": [
+      "saumyamalik/if_qwq_reasoning_verified_filtered_decontam_v2"
+     ]
+    }
+   },
+   {
+    "name": "omr_cot",
+    "kind": "math",
+    "domain": "math",
+    "windows": 1229,
+    "dataset": {
+     "repo": "nvidia/OpenMathReasoning",
+     "revision": "d3d08664755704f422af97d43a7ff0ded4bd95df",
+     "prefix": "data/cot-",
+     "columns": [
+      "problem",
+      "generated_solution"
+     ]
+    }
+   },
+   {
+    "name": "osr2",
+    "kind": "science",
+    "domain": "science",
+    "windows": 614,
+    "dataset": {
+     "repo": "nvidia/OpenScienceReasoning-2",
+     "revision": "174b02c9cdf231f220765b2a1d5ece4550921894",
+     "prefix": "train/",
+     "columns": [
+      "input",
+      "output"
+     ]
+    }
+   },
+   {
+    "name": "ocr2",
+    "kind": "code",
+    "domain": "code",
+    "windows": 1229,
+    "dataset": {
+     "repo": "nvidia/OpenCodeReasoning-2",
+     "revision": "eadf535931451525f3e5621d0f960c240bc62fd9",
+     "prefix": "train/python/",
+     "columns": [
+      "dataset",
+      "split",
+      "index",
+      "question_id",
+      "r1_generation"
+     ]
+    }
+   }
+  ]
+ }
+}

@@ -1,0 +1,94 @@
+--- a/verl/workers/rollout/vllm_rollout/bucketed_weight_transfer.py
++++ b/verl/workers/rollout/vllm_rollout/bucketed_weight_transfer.py
+@@ -17,7 +17,6 @@
+ Not recommended depending on vllm for this file.
+ """
+ 
+-import gc
+ import logging
+ import os
+ from multiprocessing import shared_memory
+@@ -152,6 +151,7 @@
+                 offset += weight.nbytes
+ 
+             # send the last bucket
++            name = weight = None
+             get_torch_device().synchronize()
+             self.socket.send_pyobj({"bucket_meta": bucket_meta, "is_last": True})
+             self.socket.recv()
+@@ -209,7 +209,6 @@
+             self.shm.unlink()
+             del self.shm
+             self.shm = None
+-        gc.collect()
+         get_torch_device().ipc_collect()
+         get_torch_device().empty_cache()
+ 
+@@ -257,6 +256,7 @@
+         self.socket = None
+         self.buffer = None
+         self.shm = None
++        self._ack_pending = False
+ 
+     def receive_weights(self, on_bucket_received: callable):
+         """
+@@ -286,9 +286,11 @@
+                     weights.append((name, tensor))
+                 on_bucket_received(weights)
+                 get_torch_device().synchronize()
+-                self.socket.send(b"")
+                 del weights, tensor
+-                if metadata["is_last"]:
++                if not metadata["is_last"]:
++                    self.socket.send(b"")
++                else:
++                    self._ack_pending = True
+                     break
+         finally:
+             self._cleanup()
+@@ -316,9 +318,6 @@
+ 
+     def _cleanup(self):
+         """clean up"""
+-        if self.socket is not None:
+-            self.socket.close()
+-            self.socket = None
+         # Synchronize before releasing the buffer to ensure all async ops
+         # referencing it (e.g. clone, .to()) have completed.
+         get_torch_device().synchronize()
+@@ -328,6 +327,12 @@
+             self.shm.close()
+             del self.shm
+             self.shm = None
+-        gc.collect()
+         get_torch_device().ipc_collect()
+         get_torch_device().empty_cache()
++        # Final ACK follows release of our IPC mapping. The sender may free
++        # its bucket as soon as it receives this acknowledgement (veRL #7873).
++        if self.socket is not None:
++            if self._ack_pending:
++                self.socket.send(b"")
++            self.socket.close()
++            self.socket = None
+--- a/verl/workers/engine_workers.py
++++ b/verl/workers/engine_workers.py
+@@ -735,7 +735,8 @@
+         # 3. offload model to cpu
+         if self.actor.engine.is_param_offload_enabled:
+             self.actor.engine.to("cpu", model=True, optimizer=False, grad=False)
+-        aggressive_empty_cache(force_sync=True)
++        get_torch_device().synchronize()
++        get_torch_device().empty_cache()
+ 
+         # 4. resume kv_cache
+         if self.config.rollout.free_cache_engine:
+--- a/verl/workers/engine/fsdp/transformer_impl.py
++++ b/verl/workers/engine/fsdp/transformer_impl.py
+@@ -737,7 +737,6 @@
+                 load_fsdp_model_to_gpu(self.module)
+             if optimizer and self.optimizer is not None:
+                 load_fsdp_optimizer(self.optimizer, device)
+-            gc.collect()
+         elif device == "cpu":
+             if model:
+                 offload_fsdp_model_to_cpu(self.module)

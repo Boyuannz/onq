@@ -1,0 +1,1 @@
+{"bits": 2, "group_size": 128, "weight_lr": 2e-5, "quant_lr": 1e-4}

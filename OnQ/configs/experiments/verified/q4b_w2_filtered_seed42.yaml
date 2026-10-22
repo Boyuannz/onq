@@ -1,0 +1,4 @@
+{
+  "requires": {"stage": "calibration", "model": "qwen3_4b", "bits": 2, "group_size": 128, "calibration_recipe": "filtered_reasoning"},
+  "settings": {"train_size": 4096, "val_size": 64, "reasoning_train_size": 3276, "general_train_size": 820, "reasoning_val_size": 51, "general_val_size": 13, "training_seqlen": 2048, "batch_size": 2, "epochs": 2, "seed": 42, "weight_lr": 2e-5, "quant_lr": 1e-4}
+}

@@ -1,0 +1,18 @@
+# Scoring-related versions recorded for the original main evaluation.
+evalscope[sandbox]==1.5.1
+evalplus==0.3.1
+numpy==2.2.6
+nltk==3.10.3
+sympy==1.14.0
+latex2sympy2_extended==1.11.0
+antlr4-python3-runtime==4.9.3
+word2number==1.1
+langdetect==1.0.9
+regex==2026.9.10
+transformers==4.57.6
+openai==3.3.1
+datasets==3.6.0
+pandas==3.0.5
+tokenizers==0.22.2
+huggingface-hub==0.36.2
+httpx==0.28.1

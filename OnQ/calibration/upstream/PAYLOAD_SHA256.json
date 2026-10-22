@@ -1,0 +1,25 @@
+{
+  "upstream_commit": "c36060fefb05aa8c29dcad47b52feacf95201d37",
+  "provenance_header_lines": 3,
+  "python_payload_sha256": {
+    "datautils_block.py": "61885f12ca3283da445c11b1eab9eed7cce09c44c11102a1ecd8aaedd9ad1b6f",
+    "utils.py": "befb7b966b58ba3e2d61d5a0014bc9d452f5aa88a34169c98733635d53040887",
+    "main_block_qat.py": "3ea48dff7271a19d1c537d9f27d3fa1ad0ac18ff04e82f1658563dd3da43de20",
+    "quantize/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "quantize/quantizer.py": "2156c43cd7d503ce742a6946792f5f937ade53b55eec04242837fe78c41c7704",
+    "quantize/int_linear_real.py": "5bee7901e143473fa49d2f0ed450cd582870519333ea9ce4c2b4f8dcd04d6346",
+    "quantize/utils.py": "1e9ca3dcd32d2d971bbad33920ba2dd755a8e3eac046a8c975529bbe63e6d609",
+    "quantize/block_qat.py": "5750d73ede1201d8f3cd7ce097990f60753ad6778e5fd4a1291094a81b0cca3f",
+    "quantize/int_linear_fake.py": "5befa02dc1dcc7faef4e22f70fa76b11158f3c59e861ffcdbf4600583869a563",
+    "quantize/triton_utils/custom_autotune.py": "a54245ed93567474ba4aa307f881ca76ab253143c8a19c1450cbc79dfaa618da",
+    "quantize/triton_utils/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "quantize/triton_utils/kernels.py": "a24be63f515044ae292757aaf2685debeab6c71bf73385fa7dbe6c1ab4cafa29"
+  },
+  "local_patch_description": "Preserve pre-cast, pre-materialization latent model state and reload quantizers; admit only declared FP32 latent training sources before loading. See OnQ/docs/CHECKPOINTS.md. Separate frozen inference loading from FP32 latent training admission; materialized evaluation does not requantize weights and keeps the exported FP16 dtype. Reject abbreviated CLI options and incompatible clamp endpoint gradients before Block-AP updates, preserving the upstream quantizer arithmetic. update_dataset runs torch.cuda.empty_cache()/gc.collect() once per pass instead of per batch (bitwise-identical outputs). Package imports renamed from qat to OnQ; quantization arithmetic unchanged. Preserve original two-GPU global-batch-2 execution; reject any nonfinite activation/loss without a debugger and skip absent validation activation caches during disk offload. Remove the identical shadowed clamp_ste definition; the surviving function and all quantization arithmetic are unchanged.",
+  "local_patch_payload_sha256": {
+    "main_block_qat.py": "c79a58758b939f3d09fa60be42e25f1a2bcde60ec85232ebe739eda31790a874",
+    "quantize/block_qat.py": "8979ac2b7ce28cb3657e9e7a53045d38bd58ffb9f5a24b2a9e12effbe34a5cae",
+    "quantize/int_linear_fake.py": "fff75567d185b1c7f85b97c85693d8460ff3593b90fb3aae07177ed476944bcd",
+    "quantize/quantizer.py": "3785e42078094e1be3d997c8db638ecf5de6f9acce2decfd3c11721f28ea61c5"
+  }
+}
