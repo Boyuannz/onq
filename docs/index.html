@@ -7,7 +7,7 @@
   <title>Right On Q: Recovering Reasoning under Quantization</title>
   <meta name="description" content="OnQ recovers reasoning in 2- and 3-bit LLMs by training the quantized student on its own generated trajectories with full-precision teacher supervision and candidate-wise Dynamic KL.">
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
-  <link rel="stylesheet" href="static/css/site.css?v=18">
+  <link rel="stylesheet" href="static/css/site.css?v=19">
   <script>
     window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }, svg: { fontCache: 'global' } };
   </script>
@@ -23,7 +23,7 @@
   <section class="hero">
     <h1>Right On <span class="q">Q</span>: Recovering Reasoning under Quantization via Self-Generated Trajectories</h1>
     <p class="lede">
-      2- and 3-bit models distilled on fixed responses often lose their way in long reasoning and never reach an answer.
+      2- and 3-bit models distilled on fixed responses often fail to finish long reasoning within the token budget.
       OnQ trains the quantized student on its own generations, supervised by the full-precision model through candidate-wise Dynamic KL, and achieves the highest nine-benchmark average on Qwen3-1.7B, 4B, and 8B at both 2 and 3 bits.
     </p>
     <div class="authors">
@@ -84,9 +84,7 @@
 
     <div class="tldr" id="tldr">
       <p>
-        <b>TL;DR.</b> Existing QAT recipes distill a low-bit student from its full-precision counterpart on fixed responses. At 2 bits, these students recover little accuracy on questions that need long reasoning and often hit the token limit where the full-precision model stops.
-        We identify two challenges: <span class="term">trajectory divergence</span>, where the prefixes seen in training drift away from those the student generates, increasingly so as responses lengthen, and <span class="term">distributional misalignment</span>, where on its own prefixes the student underpredicts some next-token candidates and overpredicts others.
-        OnQ is a low-bit recovery pipeline that combines on-policy distillation and candidate-wise Dynamic KL. Across Qwen3-1.7B, 4B, and 8B at 2 and 3 bits, it achieves the highest nine-benchmark average in all six settings, improves the Qwen3-8B 2-bit average by 10.26 points over the strongest baseline, and produces shorter responses with fewer truncations and repetitive errors.
+        <b>TL;DR.</b> Low-bit models trained to imitate fixed responses break down on long reasoning. OnQ instead trains the quantized model on its own generations, with the full-precision model as teacher, and has the best average accuracy on Qwen3-1.7B, 4B, and 8B at 2 and 3 bits.
       </p>
     </div>
   </section>
@@ -146,7 +144,7 @@
         <div class="prose">
           <p>
             Trajectory divergence suggests supervising the student on the prefixes it actually generates. Doing so exposes a second challenge.
-            We run the block-wise calibrated 2-bit student on its own rollouts and compare its next-token distribution $q$ with the full-precision teacher's $p$ at every prefix.
+            We run the block-wise calibrated 2-bit student on its own rollouts and compare its next-token distribution $q$ with the full-precision teacher's $p$ at 16,384 prefixes from 128 of its responses.
             The student makes <b>two-sided</b> errors: at the same prefix it substantially underpredicts some candidates ($p_v \gg q_v$) and overpredicts others ($q_v \gg p_v$),
             and these errors become more frequent at high-entropy prefixes, where the model is deciding how to continue. We call this <span class="term">distributional misalignment</span>.
           </p>
@@ -177,7 +175,7 @@
 
         <div class="prose">
           <p>
-            Neither KL direction corrects both sides equally well. At high-entropy prefixes and under local logit updates, forward KL (FKL) moves 99.7% of severely underpredicted candidates ($p_v/q_v \ge 20$) toward the teacher but only 75.1% of severely overpredicted ones ($q_v/p_v \ge 20$);
+            Neither KL direction corrects both sides equally well. At high-entropy prefixes (student entropy of at least 0.5 nats) and under a small logit update, forward KL (FKL) moves 99.7% of severely underpredicted candidates ($p_v/q_v \ge 20$) toward the teacher but only 75.1% of severely overpredicted ones ($q_v/p_v \ge 20$);
             reverse KL (RKL) moves 86.3% of the overpredicted candidates but only 70.9% of the underpredicted ones. This calls for an objective that balances correction on both sides of the distribution.
           </p>
         </div>
@@ -241,7 +239,7 @@
         <div class="prose">
           <p>
             We quantize Qwen3-1.7B, 4B, and 8B to 2 and 3 bits (weights only, BF16 activations) and compare OnQ with two PTQ methods (GPTQ, AutoRound) and three QAT methods (EfficientQAT, BitDistiller, ReasoningQAT).
-            All models are evaluated in thinking mode on nine benchmarks spanning mathematics (GSM8K, MATH-500, AIME 24–26), code (HumanEval+, MBPP+, LiveCodeBench), knowledge and science (MMLU-Redux, GPQA-Diamond), and instruction following (IFEval), with a 32,768-token response cap.
+            All models are evaluated in thinking mode on nine benchmarks spanning mathematics (GSM8K, MATH-500, AIME 24–26), code (HumanEval+, MBPP+, LiveCodeBench), knowledge and science (MMLU-Redux, GPQA-Diamond), and instruction following (IFEval), with a 32,768-token response cap (8,192 for some PTQ settings).
           </p>
           <p>
             OnQ has the highest nine-benchmark average in all six model/bit settings and the highest score on 48 of the 54 benchmark–setting pairs.
@@ -273,7 +271,7 @@
 
         <div class="note">
           <span class="lbl">The advantage grows as precision falls</span>
-          <p>At every model size, OnQ's margin over the strongest baseline is larger at 2 bits than at 3 bits, and at 2 bits it exceeds 10 points on Qwen3-4B and 8B. At 2 bits the PTQ baselines collapse, while OnQ achieves the highest score on every benchmark at every model size. At 3 bits, OnQ comes within four points of the full-precision average on Qwen3-4B and 8B.</p>
+          <p>At every model size, OnQ's margin over the strongest baseline is larger at 2 bits than at 3 bits, and at 2 bits it exceeds 10 points on Qwen3-4B and 8B. At 2 bits the PTQ baselines perform poorly, while OnQ achieves the highest score on every benchmark at every model size. At 3 bits, OnQ comes within four points of the full-precision average on Qwen3-4B and 8B.</p>
         </div>
         <div class="note">
           <span class="lbl">The largest gains come from long-horizon reasoning</span>
@@ -319,7 +317,7 @@
             <div class="multiples two" id="fig8"></div>
             <div class="legend" id="fig8-legend"></div>
           </div>
-          <figcaption><b>Figure 8. How each response ends.</b> Share of questions answered correctly, failed with a repetitive error, or failed otherwise, on MATH-500 (Qwen3-1.7B W2) and AIME 24–26 (Qwen3-4B W3). Hover a segment for its value.</figcaption>
+          <figcaption><b>Figure 8. How each response ends.</b> Share of questions answered correctly, failed with a repetitive error, or failed otherwise, on MATH-500 (Qwen3-1.7B W2) and AIME 24–26 (Qwen3-4B W3), from one evaluation run, so values differ slightly from Table 1. Hover a segment for its value.</figcaption>
         </figure>
       </section>
 
@@ -426,7 +424,7 @@
 </main>
 
 <div class="tooltip" id="tooltip"></div>
-<script src="static/js/data.js?v=18"></script>
-<script src="static/js/site.js?v=18"></script>
+<script src="static/js/data.js?v=19"></script>
+<script src="static/js/site.js?v=19"></script>
 </body>
 </html>
