@@ -64,7 +64,7 @@ and 300 updates on Qwen3-4B/8B.
 ## Citation
 
 ```bibtex
-@article{zheng2026rightonq,
+@misc{zheng2026rightonq,
   title={Right On Q: Recovering Reasoning under Quantization via Self-Generated Trajectories},
   author={Boyuan Zheng and Jing Xiong and Chenwei Wu and Hui Shen and Zesen Zhao and Hei Ting Una Chan and Xueshen Liu and Zhen Zhang and Liyue Shen and Zechun Liu and Z. Morley Mao},
   year={2026},
