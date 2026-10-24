@@ -2,7 +2,9 @@
 
 Official implementation of **Right On Q: Recovering Reasoning under Quantization via Self-Generated Trajectories**.
 
-[Paper](https://arxiv.org/abs/2610.29378) · [Models](https://huggingface.co/collections/Ryannnnnnz/onq-6acf370a0ea75a4cf7f5c2f9)
+[![Project Page](https://img.shields.io/badge/Project-Page-2b6cb0)](https://boyuannz.github.io/onq/) [![arXiv](https://img.shields.io/badge/arXiv-2610.29378-b31b1b?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2610.29378) [![Hugging Face Models](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Models-ffcc4d)](https://huggingface.co/collections/Ryannnnnnz/onq-6acf370a0ea75a4cf7f5c2f9)
+
+[Project page](https://boyuannz.github.io/onq/) · [Paper](https://arxiv.org/abs/2610.29378) · [Models](https://huggingface.co/collections/Ryannnnnnz/onq-6acf370a0ea75a4cf7f5c2f9)
 
 OnQ recovers low-bit reasoning through block-wise calibration followed by
 on-policy distillation with candidate-wise Dynamic KL.
