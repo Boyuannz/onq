@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Right On Q: Recovering Reasoning under Quantization</title>
+  <meta name="description" content="OnQ recovers reasoning in 2- and 3-bit LLMs by training the quantized student on its own generated trajectories with full-precision teacher supervision and candidate-wise Dynamic KL.">
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/site.css?v=18">
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }, svg: { fontCache: 'global' } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+</head>
+<body>
+
+
+<main id="top">
+<div class="wrap">
+
+  <!-- ===================== Hero ===================== -->
+  <section class="hero">
+    <h1>Right On <span class="q">Q</span>: Recovering Reasoning under Quantization via Self-Generated Trajectories</h1>
+    <p class="lede">
+      2- and 3-bit models distilled on fixed responses often lose their way in long reasoning and never reach an answer.
+      OnQ trains the quantized student on its own generations, supervised by the full-precision model through candidate-wise Dynamic KL, and achieves the highest nine-benchmark average on Qwen3-1.7B, 4B, and 8B at both 2 and 3 bits.
+    </p>
+    <div class="authors">
+      <span>Boyuan Zheng<sup>1</sup>,</span>
+      <span>Jing Xiong<sup>2</sup>,</span>
+      <span>Chenwei Wu<sup>1</sup>,</span>
+      <span>Hui Shen<sup>1</sup>,</span>
+      <span>Zesen Zhao<sup>1</sup>,</span>
+      <span>Hei Ting Una Chan<sup>1</sup>,</span>
+      <span>Xueshen Liu<sup>1</sup>,</span>
+      <span>Zhen Zhang<sup>2</sup>,</span>
+      <span>Liyue Shen<sup>1</sup>,</span>
+      <span>Zechun Liu<sup>3</sup>,</span>
+      <span>Z. Morley Mao<sup>1</sup></span>
+    </div>
+    <div class="affil"><span><sup>1</sup>University of Michigan, Ann Arbor</span><span><sup>2</sup>University of California, Santa Barbara</span><span><sup>3</sup>Meta AI</span></div>
+    <div class="pills">
+      <a class="pill solid" href="https://arxiv.org/abs/2610.29378"><svg class="icon" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3.8423 0a1.0037 1.0037 0 0 0-.922.6078c-.1536.3687-.0438.6275.2938 1.1113l6.9185 8.3597-1.0223 1.1058a1.0393 1.0393 0 0 0 .003 1.4229l1.2292 1.3135-5.4391 6.4444c-.2803.299-.4538.823-.2971 1.1986a1.0253 1.0253 0 0 0 .9585.635.9133.9133 0 0 0 .6891-.3405l5.783-6.126 7.4902 8.0051a.8527.8527 0 0 0 .6835.2597.9575.9575 0 0 0 .8777-.6138c.1577-.377-.017-.7502-.306-1.1407l-7.0518-8.3418 1.0632-1.13a.9626.9626 0 0 0 .0089-1.3165L4.6336.4639s-.3733-.4535-.768-.463zm0 .272h.0166c.2179.0052.4874.2715.5644.3639l.005.006.0052.0055 10.169 10.9905a.6915.6915 0 0 1-.0072.945l-1.0666 1.133-1.4982-1.7724-8.5994-10.39c-.3286-.472-.352-.6183-.2592-.841a.7307.7307 0 0 1 .6704-.4401Zm14.341 1.5701a.877.877 0 0 0-.6554.2418l-5.6962 6.1584 1.6944 1.8319 5.3089-6.5138c.3251-.4335.479-.6603.3247-1.0292a1.1205 1.1205 0 0 0-.9763-.689zm-7.6557 12.2823 1.3186 1.4135-5.7864 6.1295a.6494.6494 0 0 1-.4959.26.7516.7516 0 0 1-.706-.4669c-.1119-.2682.0359-.6864.2442-.9083l.0051-.0055.0047-.0055z"/></svg>Paper</a>
+      <a class="pill" href="https://github.com/Boyuannz/onq"><svg class="icon" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>Code</a>
+      <a class="pill" href="https://huggingface.co/collections/Ryannnnnnz/onq-6acf370a0ea75a4cf7f5c2f9"><svg class="icon" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M1.4446 11.5059c0 1.1021.1673 2.1585.4847 3.1563-.0378-.0028-.0691-.0058-.1058-.0058-.4209 0-.8015.16-1.0704.4512-.3454.3737-.4984.8335-.4316 1.293a1.576 1.576 0 0 0 .2148.5978c-.2319.1864-.4018.4456-.4844.7578-.0646.2448-.131.7543.2149 1.2794a1.4552 1.4552 0 0 0-.0625.1055c-.208.3923-.2207.8372-.0371 1.25.2783.6258.9696 1.1175 2.3126 1.6467.8356.3292 1.5988.5411 1.6056.543 1.1046.2847 2.104.4277 2.969.4277 1.4173 0 2.4754-.3849 3.1525-1.1446 1.538.2651 2.791.1403 3.592.006.6773.7555 1.7332 1.1387 3.1467 1.1387.8649 0 1.8643-.143 2.969-.4278.0068-.0019.77-.2138 1.6056-.543 1.343-.5292 2.0343-1.0208 2.3126-1.6466.1836-.4129.171-.8577-.037-1.25a1.4685 1.4685 0 0 0-.0626-.1056c.346-.525.2795-1.0346.2149-1.2793-.0826-.3122-.2525-.5714-.4844-.7579.11-.1816.1831-.3788.2148-.5977.0669-.4595-.0862-.9193-.4316-1.293-.2688-.2913-.6495-.4513-1.0704-.4513-.0209 0-.0376.0008-.0588.0018.3162-.9966.4846-2.0518.4846-3.1523 0-5.807-4.7362-10.5144-10.5789-10.5144-5.8426 0-10.5788 4.7073-10.5788 10.5144Zm10.5788-9.4831c5.2727 0 9.5476 4.246 9.5476 9.483a9.4201 9.4201 0 0 1-.2696 2.2365c-.0039-.0047-.0079-.011-.0117-.0156-.274-.3255-.6679-.5059-1.1075-.5059-.352 0-.714.1155-1.0763.3438-.2403.1517-.5058.422-.7793.7598-.2534-.3492-.608-.5832-1.0137-.6465a1.5174 1.5174 0 0 0-.2344-.0176c-.9263 0-1.4828.7993-1.6935 1.5177-.1046.2426-.6065 1.3482-1.3614 2.0978-1.1681 1.1601-1.4458 2.3534-.8396 3.6382-.843.1029-1.5836.0927-2.365-.006.5906-1.212.3626-2.4388-.8426-3.6322-.755-.7496-1.2568-1.8552-1.3614-2.0978-.2107-.7184-.7673-1.5177-1.6935-1.5177-.078 0-.1568.0054-.2344.0176-.4057.0633-.7604.2973-1.0137.6465-.2735-.3379-.539-.6081-.7794-.7598-.3622-.2283-.7243-.3438-1.0762-.3438-.4266 0-.8094.171-1.0821.4786a9.4208 9.4208 0 0 1-.2598-2.1936c0-5.237 4.2749-9.483 9.5475-9.483zM8.6443 7.0036c-.4838.0043-.9503.2667-1.1934.7227-.3536.6633-.1006 1.4873.5645 1.84.351.1862.4883-.5261.836-.6485.3107-.1095.841.399 1.0078.086.3536-.6634.1025-1.4874-.5625-1.84a1.3659 1.3659 0 0 0-.6524-.1602Zm6.8403 0c-.2199-.002-.4426.05-.6504.1602-.665.3526-.9181 1.1766-.5645 1.84.1669.313.6971-.1955 1.0079-.086.3476.1224.4867.8347.838.6485.6649-.3527.916-1.1767.5624-1.84-.243-.456-.7096-.7184-1.1934-.7227Zm-9.7565 1.418a.8768.8768 0 0 0-.877.877c0 .4846.3925.877.877.877a.8768.8768 0 0 0 .877-.877.8768.8768 0 0 0-.877-.877zm12.6434 0c-.4845 0-.879.3925-.879.877 0 .4846.3945.877.879.877a.8768.8768 0 0 0 .877-.877.8768.8768 0 0 0-.877-.877zM8.7927 11.459c-.179-.003-.2793.1107-.2793.416 0 .8097.3874 2.125 1.4279 2.924.207-.7123 1.3453-1.2832 1.5079-1.2012.2315.1167.2191.4417.6074.7266.3884-.285.374-.6098.6056-.7266.1627-.082 1.3009.4889 1.5079 1.2012 1.0404-.799 1.4278-2.1144 1.4278-2.924 0-1.2212-1.583.6402-3.5413.6485-1.4686-.0061-2.7266-1.0558-3.2639-1.0645zM4.312 14.4768c.5792.365 1.6964 2.2751 2.1056 3.0177.1371.2488.371.3536.582.3536.4188 0 .7465-.4138.0391-.9395-1.0636-.791-.6914-2.0846-.1836-2.1642a.4302.4302 0 0 1 .0664-.004c.4616 0 .666.7892.666.7892s.5959 1.4898 1.6213 2.508c.942.9356 1.062 1.703.4961 2.6661-.0164-.004-.0159.0236-.1484.2149-.1853.2673-.4322.4688-.7188.6152-.5062.2269-1.1397.2696-1.7833.2696-1.037 0-2.1017-.1824-2.6975-.336-.0293-.0075-3.6505-.9567-3.1916-1.8224.0771-.1454.2033-.2031.3633-.2031.6463 0 1.823.9551 2.3283.9551.113 0 .196-.0865.2285-.2031.2249-.8045-3.2787-1.0522-2.9846-2.1642.0519-.1967.193-.2757.3907-.2754.854 0 2.7704 1.4923 3.172 1.4923.0307 0 .0525-.0085.0645-.0274.2012-.3227.1096-.5865-1.3087-1.4395-1.4182-.8533-2.4315-1.329-1.8653-1.9416.0651-.0707.1574-.1015.2695-.1015.8611.0002 2.8948 1.84 2.8948 1.84s.5487.5683.8809.5683c.0762 0 .1416-.0315.1855-.1054.2355-.3946-2.1858-2.2183-2.3224-2.971-.0926-.51.0641-.7676.3555-.7676-.0006.008.1701-.0285.4942.1759zm16.2257.5918c-.1366.7526-2.5579 2.5764-2.3224 2.9709.044.074.1092.1055.1855.1055.3321 0 .881-.5684.881-.5684s2.0336-1.8397 2.8947-1.84c.1121 0 .2044.0308.2695.1016.5662.6125-.447 1.0882-1.8653 1.9415-1.4183.853-1.51 1.1168-1.3087 1.4396.012.0188.0337.0273.0644.0273.4016 0 2.3181-1.4923 3.1721-1.4923.1977-.0002.3388.0787.3907.2754.294 1.112-3.2095 1.3597-2.9846 2.1642.0325.1166.1156.2032.2285.2032.5054 0 1.682-.9552 2.3283-.9552.16 0 .2862.0577.3633.2032.459.8656-3.1623 1.8149-3.1916 1.8224-.5958.1535-1.6605.336-2.6975.336-.6351 0-1.261-.0409-1.7638-.2599-.2949-.1472-.5488-.3516-.7383-.625-.0411-.0682-.1026-.1476-.1426-.205-.5726-.9679-.455-1.7371.4903-2.676 1.0254-1.0182 1.6212-2.508 1.6212-2.508s.2044-.7891.666-.7891a.4318.4318 0 0 1 .0665.0039c.5078.0796.88 1.3732-.1836 2.1642-.7074.5257-.3797.9395.039.9395.211 0 .445-.1047.5821-.3535.4092-.7426 1.5264-2.6527 2.1056-3.0178.5588-.3524.99-.1816.8497.5918z"/></svg>Models</a>
+      <a class="pill" href="#bibtex">BibTeX</a>
+    </div>
+
+    <nav class="contents" aria-label="Contents">
+      <a href="#tldr">TL;DR</a>
+      <a href="#problem"><b>1</b> Long-horizon failure</a>
+      <a href="#misalignment"><b>2</b> Two-sided errors</a>
+      <a href="#method"><b>3</b> Method</a>
+      <a href="#results"><b>4</b> Main results</a>
+      <a href="#behavior"><b>5</b> Generation behavior</a>
+      <a href="#ablations"><b>6</b> Ablations</a>
+      <a href="#contributions"><b>7</b> Contributions</a>
+      <a href="#models">Models</a>
+      <a href="#bibtex">BibTeX</a>
+    </nav>
+
+    <!-- One question, five models -->
+    <div class="race" id="race">
+      <div class="race-head">
+        <div class="race-q"><small>MATH-500 · answer 9</small>How many zeroes are at the end of 42!?</div>
+        <div class="race-meta">Qwen3-1.7B · 32,768-token budget</div>
+      </div>
+      <div id="lanes"></div>
+      <div class="scale"><div></div><div class="scale-axis" id="scale-axis"></div><div></div></div>
+      <div class="race-foot">
+        <div>
+          <span class="key"><i class="k-ans"></i>first statement of the answer</span>
+          <span class="key"><i class="k-loop"></i>stuck in a loop</span>
+        </div>
+        <button class="ghost-btn" id="replay" type="button">↻ Replay</button>
+      </div>
+    </div>
+    <figcaption>
+      <b>Figure 1. One question, five models.</b> Qwen3-1.7B at full precision and four 2-bit models (evaluation seed 42); line length is the number of generated tokens.
+      EfficientQAT and ReasoningQAT state 9 within the first 400 tokens, then start enumerating numbers and never stop; BitDistiller repeats one sentence. All three hit the 32,768-token limit without a final answer.
+      OnQ answers 9 and stops after 2,612 tokens.
+    </figcaption>
+
+    <div class="tldr" id="tldr">
+      <p>
+        <b>TL;DR.</b> Existing QAT recipes distill a low-bit student from its full-precision counterpart on fixed responses. At 2 bits, these students recover little accuracy on questions that need long reasoning and often hit the token limit where the full-precision model stops.
+        We identify two challenges: <span class="term">trajectory divergence</span>, where the prefixes seen in training drift away from those the student generates, increasingly so as responses lengthen, and <span class="term">distributional misalignment</span>, where on its own prefixes the student underpredicts some next-token candidates and overpredicts others.
+        OnQ is a low-bit recovery pipeline that combines on-policy distillation and candidate-wise Dynamic KL. Across Qwen3-1.7B, 4B, and 8B at 2 and 3 bits, it achieves the highest nine-benchmark average in all six settings, improves the Qwen3-8B 2-bit average by 10.26 points over the strongest baseline, and produces shorter responses with fewer truncations and repetitive errors.
+      </p>
+    </div>
+  </section>
+
+    <article>
+
+      <!-- ===================== 1 ===================== -->
+      <section id="problem">
+        <h2><span class="no">1</span>Low-bit QAT fails on long-horizon reasoning</h2>
+        <div class="prose">
+          <p>
+            Existing QAT recipes supervise the quantized student with its full-precision counterpart on fixed response sequences.
+            To see where this breaks, we take Qwen3-1.7B at 2 bits, group the 500 MATH-500 questions by how long the <i>full-precision</i> model's response is, and measure accuracy and how often each model runs into the 32,768-token limit.
+          </p>
+          <p>
+            As the full-precision response grows, the accuracy of the fixed-response QAT baselines collapses: on questions where the full-precision model needs at least 16K tokens, they solve at most 8% while it solves 47%.
+            On those questions BitDistiller and EfficientQAT reach the token limit on most responses, while the full-precision model never does.
+          </p>
+        </div>
+
+        <figure>
+          <div class="panel chart" id="fig2">
+            <div class="controls">
+              <div class="seg" role="group" aria-label="Metric">
+                <button type="button" data-metric="acc" aria-pressed="true">Accuracy</button>
+                <button type="button" data-metric="trunc" aria-pressed="false">Truncated responses</button>
+              </div>
+            </div>
+            <div id="fig2-svg"></div>
+            <div class="legend" id="fig2-legend"></div>
+          </div>
+          <figcaption>
+            <b>Figure 2. Accuracy and truncation by full-precision response length</b> (Qwen3-1.7B W2, MATH-500, seed 42; 96, 186, 108, 74, and 36 questions per group).
+            Hover a point for its value; click a legend entry to highlight one method.
+          </figcaption>
+        </figure>
+
+        <div class="prose">
+          <p>
+            Fixed-response distillation supervises only reference prefixes, but quantization changes how the student generates. The longer the response, the more the student conditions on its own outputs, and the further its context drifts from the prefixes it was trained on.
+            We call this <span class="term">trajectory divergence</span>. Here is what it looks like inside the Figure 1 responses:
+          </p>
+        </div>
+
+        <figure>
+          <div class="traces" id="streams"></div>
+          <figcaption>
+            <b>Figure 3. Excerpts from the Figure 1 responses.</b> Highlighted: the correct answer; red: text inside a loop; ✂: omitted text. Everything else is verbatim model output.
+            ReasoningQAT finds 9 and keeps "checking" by listing multiples of 5 far past 42; BitDistiller convinces itself that the standard formula is wrong and repeats the same clause for over 28,000 tokens.
+          </figcaption>
+        </figure>
+      </section>
+
+      <!-- ===================== 2 ===================== -->
+      <section id="misalignment">
+        <h2><span class="no">2</span>On its own prefixes, the student errs in both directions</h2>
+        <div class="prose">
+          <p>
+            Trajectory divergence suggests supervising the student on the prefixes it actually generates. Doing so exposes a second challenge.
+            We run the block-wise calibrated 2-bit student on its own rollouts and compare its next-token distribution $q$ with the full-precision teacher's $p$ at every prefix.
+            The student makes <b>two-sided</b> errors: at the same prefix it substantially underpredicts some candidates ($p_v \gg q_v$) and overpredicts others ($q_v \gg p_v$),
+            and these errors become more frequent at high-entropy prefixes, where the model is deciding how to continue. We call this <span class="term">distributional misalignment</span>.
+          </p>
+        </div>
+
+        <figure>
+          <div class="split even">
+            <div class="panel chart" id="fig4a">
+              <div class="dkl-title">Prefixes with prediction errors, by student entropy</div>
+              <div id="fig4a-svg"></div>
+              <div class="legend" id="fig4a-legend"></div>
+            </div>
+            <div class="panel" id="dkl-explorer">
+              <div class="dkl-title">Try it: one prefix from the calibrated 2-bit student</div>
+              <div class="dkl-context" id="dkl-context"></div>
+              <div class="dkl-chart" id="dkl-chart"></div>
+              <div class="dkl-readout" id="dkl-readout"></div>
+              <div class="mix" id="dkl-mix"><div class="f">FKL</div><div class="r">RKL</div></div>
+              <div class="dkl-note" id="dkl-note"></div>
+            </div>
+          </div>
+          <figcaption>
+            <b>Figure 4. Distributional misalignment (Qwen3-1.7B W2, calibrated student).</b>
+            Left: share of student-generated prefixes with underpredicted candidates, overpredicted candidates, or both, by student entropy (bands: 95% prompt-clustered bootstrap intervals; hover for each bin's range and size).
+            Right: teacher $p$ and student $q$ for the eight most probable candidates at one real prefix; click a candidate to see how Dynamic KL splits its weight between forward and reverse KL.
+          </figcaption>
+        </figure>
+
+        <div class="prose">
+          <p>
+            Neither KL direction corrects both sides equally well. At high-entropy prefixes and under local logit updates, forward KL (FKL) moves 99.7% of severely underpredicted candidates ($p_v/q_v \ge 20$) toward the teacher but only 75.1% of severely overpredicted ones ($q_v/p_v \ge 20$);
+            reverse KL (RKL) moves 86.3% of the overpredicted candidates but only 70.9% of the underpredicted ones. This calls for an objective that balances correction on both sides of the distribution.
+          </p>
+        </div>
+      </section>
+
+      <!-- ===================== 3 ===================== -->
+      <section id="method">
+        <h2><span class="no">3</span>OnQ: calibrate, then learn from your own trajectories</h2>
+
+        <figure>
+          <div class="plate"><img src="static/images/method_overview.svg" alt="OnQ overview: on-policy supervision on quantized prefixes (left) and candidate-wise Dynamic KL weighting (right)."></div>
+          <figcaption>
+            <b>Figure 5. Overview of OnQ.</b> Left: on-policy distillation trains the calibrated student on its own generated prefixes, so the full-precision teacher also supervises continuations that a fixed trajectory never contains. Right: Dynamic KL weights forward and reverse KL by each candidate's teacher–student probability ratio.
+          </figcaption>
+        </figure>
+
+        <div class="prose">
+          <p>OnQ has two stages.</p>
+          <p><b>Block-wise calibration.</b> Starting from round-to-nearest quantization (uniform, asymmetric, group size 128), we train each transformer block in sequence to reproduce the full-precision block's output, following Block-AP in EfficientQAT. This turns a broken 2-bit model into a working starting policy.</p>
+          <p><b>On-policy distillation with Dynamic KL.</b> The student samples responses through its quantized forward pass, and the frozen full-precision teacher supplies next-token distributions at every prefix the student visits, including prefixes that contain its own earlier mistakes. We update the latent weights and scales, and the student rolls out again.
+            At each prefix, every vocabulary candidate mixes forward and reverse KL with its own weight: underpredicted candidates lean on FKL, overpredicted candidates lean on RKL.</p>
+        </div>
+
+        <div class="prose">
+          <p>
+            In the same local-update analysis, Dynamic KL moves 95.1% of severely underpredicted candidates toward the teacher, close to FKL, and 84.7% of severely overpredicted ones, close to RKL (Figure 6, left).
+            Each training step samples a batch of prompts, draws one response per prompt from the current student, and minimizes Dynamic KL averaged over all response tokens in the batch.
+          </p>
+        </div>
+
+        <figure>
+          <div class="split even">
+            <div class="panel chart">
+              <div class="dkl-title">Which objective moves a candidate toward the teacher?</div>
+              <div id="fig6a-svg"></div>
+              <div class="legend" id="fig6a-legend"></div>
+            </div>
+            <div class="panel chart">
+              <div class="dkl-title">Repetition in the student's rollouts during training</div>
+              <div id="fig6b-svg"></div>
+              <div class="legend" id="fig6b-legend"></div>
+            </div>
+          </div>
+          <figcaption>
+            <b>Figure 6. Qwen3-1.7B W2.</b> Left: share of under- and overpredicted candidates at high-entropy prefixes that each objective moves toward the teacher, by how far off the student is ($p/q$ or $q/p$). Right: share of repeated tokens by position in the response, at initialization and after 50, 100, and 200 training steps; dashed lines mark the rollout caps of the length schedule.
+          </figcaption>
+        </figure>
+
+        <div class="note plain">
+          <span class="lbl">Response-length schedule</span>
+          <p>
+            Right after calibration, the student repeats itself, mostly late in long responses: for Qwen3-1.7B at 2 bits, the share of repeated tokens rises from 6.7% in the first 4K response tokens to 21.1% beyond 8K, and by step 100 it is about 1% at every position.
+            Since the loss weights all response tokens equally, long early rollouts would spend supervision on this repeated text, so we cap rollouts at 4,096 tokens for steps 1–50, 8,192 for steps 51–100, and 16,384 afterwards, for every model size and bit width.
+          </p>
+        </div>
+      </section>
+
+      <!-- ===================== 4 ===================== -->
+      <section id="results">
+        <h2><span class="no">4</span>Best at every model size and bit width</h2>
+        <div class="prose">
+          <p>
+            We quantize Qwen3-1.7B, 4B, and 8B to 2 and 3 bits (weights only, BF16 activations) and compare OnQ with two PTQ methods (GPTQ, AutoRound) and three QAT methods (EfficientQAT, BitDistiller, ReasoningQAT).
+            All models are evaluated in thinking mode on nine benchmarks spanning mathematics (GSM8K, MATH-500, AIME 24–26), code (HumanEval+, MBPP+, LiveCodeBench), knowledge and science (MMLU-Redux, GPQA-Diamond), and instruction following (IFEval), with a 32,768-token response cap.
+          </p>
+          <p>
+            OnQ has the highest nine-benchmark average in all six model/bit settings and the highest score on 48 of the 54 benchmark–setting pairs.
+            On Qwen3-8B at 2 bits it improves the average by 10.26 points over the strongest baseline, and its Qwen3-4B 2-bit model (64.95) already scores above every 2-bit baseline on Qwen3-8B (best: 60.42).
+          </p>
+        </div>
+
+        <figure>
+          <div class="panel" id="results-panel">
+            <div class="controls">
+              <div class="seg" role="group" aria-label="Model" id="model-seg">
+                <button type="button" data-model="1.7B" aria-pressed="false">Qwen3-1.7B</button>
+                <button type="button" data-model="4B" aria-pressed="false">Qwen3-4B</button>
+                <button type="button" data-model="8B" aria-pressed="true">Qwen3-8B</button>
+              </div>
+              <div class="seg" role="group" aria-label="Bit width" id="bits-seg">
+                <button type="button" data-bits="2" aria-pressed="true">2-bit</button>
+                <button type="button" data-bits="3" aria-pressed="false">3-bit</button>
+              </div>
+              <label class="check"><input type="checkbox" id="show-trunc"> show truncation rate</label>
+            </div>
+            <div class="table-wrap"><table class="res" id="res-table"></table></div>
+          </div>
+          <figcaption>
+            <b>Table 1. Quantization results (%) on Qwen3.</b> Scores average evaluation seeds 42, 43, and 44 (AutoRound: seed 42); bold marks the best quantized score in each model/bit group.
+            With "show truncation rate" on, the small number under each score is the share of responses that reach the output-token limit.
+          </figcaption>
+        </figure>
+
+        <div class="note">
+          <span class="lbl">The advantage grows as precision falls</span>
+          <p>At every model size, OnQ's margin over the strongest baseline is larger at 2 bits than at 3 bits, and at 2 bits it exceeds 10 points on Qwen3-4B and 8B. At 2 bits the PTQ baselines collapse, while OnQ achieves the highest score on every benchmark at every model size. At 3 bits, OnQ comes within four points of the full-precision average on Qwen3-4B and 8B.</p>
+        </div>
+        <div class="note">
+          <span class="lbl">The largest gains come from long-horizon reasoning</span>
+          <p>In five of the six settings, OnQ's largest margin over the strongest baseline falls on AIME or LiveCodeBench, and among the code benchmarks it falls on LiveCodeBench in every setting. HumanEval+ and MBPP+ ask for single functions from short specifications, whereas LiveCodeBench responses are about three times as long even at full precision. Over thousands of tokens, small errors compound into wrong or unfinished solutions; fixed-response QAT never trains on these long student trajectories, and OnQ supervises them directly.</p>
+        </div>
+      </section>
+
+      <!-- ===================== 5 ===================== -->
+      <section id="behavior">
+        <h2><span class="no">5</span>More accurate with fewer tokens, and far less repetition</h2>
+        <div class="prose">
+          <p>
+            OnQ's gains do not come from thinking longer. At 2 bits, across MATH-500, AIME, and LiveCodeBench, OnQ achieves the highest accuracy at all three model sizes, with shorter mean responses than the most accurate baseline in eight of the nine cases.
+            On Qwen3-4B LiveCodeBench, accuracy rises from 28.34% for ReasoningQAT to 46.64% while the mean response shortens by more than a fifth.
+            At 3 bits, OnQ again achieves the highest accuracy among QAT methods on all three benchmarks at every size, and it has the lowest average truncation rate among QAT methods in all six settings.
+          </p>
+        </div>
+        <figure>
+          <div class="panel chart">
+            <div class="controls">
+              <div class="seg" role="group" aria-label="Bit width" id="fig7-bits">
+                <button type="button" data-bits="2" aria-pressed="true">2-bit</button>
+                <button type="button" data-bits="3" aria-pressed="false">3-bit</button>
+              </div>
+            </div>
+            <div class="multiples" id="fig7"></div>
+            <div class="legend" id="fig7-legend"></div>
+          </div>
+          <figcaption>
+            <b>Figure 7. Accuracy versus mean generated tokens</b> for the QAT methods, averaged over three evaluation seeds. Marker shape is model size; lines connect the sizes of one method. Up and to the left is better. Hover a point for its values.
+          </figcaption>
+        </figure>
+
+        <div class="prose">
+          <p>
+            We also separate incorrect responses into <b>repetitive errors</b>, in which a response emits the same sentence, block, or computation again and again, and all other errors.
+            The full-precision models produce no repetitive errors on MATH-500 and one on AIME. The fixed-response QAT baselines produce repetitive errors on 11.4–54.0% of the MATH-500 questions (Qwen3-1.7B W2) and on 6.7–11.1% of the AIME questions (Qwen3-4B W3).
+            Trained on its own generations, OnQ produces repetitive errors on only 2.4% of the MATH-500 questions, a reduction that accounts for most of its accuracy gain over ReasoningQAT, and none on AIME.
+          </p>
+        </div>
+        <figure>
+          <div class="panel chart">
+            <div class="multiples two" id="fig8"></div>
+            <div class="legend" id="fig8-legend"></div>
+          </div>
+          <figcaption><b>Figure 8. How each response ends.</b> Share of questions answered correctly, failed with a repetitive error, or failed otherwise, on MATH-500 (Qwen3-1.7B W2) and AIME 24–26 (Qwen3-4B W3). Hover a segment for its value.</figcaption>
+        </figure>
+      </section>
+
+      <!-- ===================== 6 ===================== -->
+      <section id="ablations">
+        <h2><span class="no">6</span>Which design choices drive the gains?</h2>
+
+        <h3>Contribution of each stage</h3>
+        <div class="prose">
+          <p>
+            Direct round-to-nearest (RTN) quantization severely degrades 2-bit accuracy, so a working policy has to be restored before the student can learn from its own rollouts. Block-wise calibration provides one, but still struggles on long-horizon reasoning at 2 bits, as its LiveCodeBench scores show.
+            On-policy distillation then closes about half or more of the remaining gap to full precision in every setting, and lowers truncation in all six.
+          </p>
+        </div>
+        <figure>
+          <div class="panel"><div class="table-wrap"><table class="res compact" id="stage-table"></table></div></div>
+          <figcaption><b>Table 2. Scores (%) across recovery stages.</b> OnQ is calibration followed by on-policy distillation and averages evaluation seeds 42, 43, and 44; RTN and calibration use seed 42.</figcaption>
+        </figure>
+
+        <div class="pair">
+          <div class="panel">
+            <h3>On-policy vs. fixed-response distillation</h3>
+            <div class="table-wrap">
+              <table class="res compact">
+                <thead><tr><th>Method</th><th>MATH-500</th><th>HumanEval+</th><th>MMLU-Redux</th></tr></thead>
+                <tbody>
+                  <tr><td>Fixed-response FKL</td><td>59.00</td><td>39.63</td><td>52.28</td></tr>
+                  <tr><td>Fixed-response DKL</td><td>61.00</td><td>42.07</td><td>52.68</td></tr>
+                  <tr class="onq"><td>On-policy DKL (OnQ)</td><td class="best">69.40</td><td class="best">48.78</td><td class="best">55.75</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              Qwen3-1.7B W2. All three runs start from the same calibrated checkpoint and use the same number of response tokens; fixed-response training uses the QAT baselines' question–response pairs, and on-policy training uses our prompt pool. On-policy Dynamic KL exceeds fixed-response Dynamic KL on all three benchmarks, by up to 8.40 points; replacing FKL with Dynamic KL in fixed-response distillation adds up to 2.44.
+            </p>
+          </div>
+          <div class="panel">
+            <h3>Dynamic KL vs. other on-policy objectives</h3>
+            <div class="table-wrap">
+              <table class="res compact">
+                <thead><tr><th>Method</th><th>Objective</th><th>MATH-500</th><th>HumanEval+</th><th>MMLU-Redux</th></tr></thead>
+                <tbody>
+                  <tr class="fp"><td>Cold start</td><td>–</td><td>41.40</td><td>3.66</td><td>45.12</td></tr>
+                  <tr><td>Vanilla OPD</td><td>RKL</td><td>63.00</td><td>10.98</td><td>48.18</td></tr>
+                  <tr><td>OPD + GRPO</td><td>RKL + RLVR</td><td>66.00</td><td>4.27</td><td>48.84</td></tr>
+                  <tr><td>GKD</td><td>FKL</td><td>66.20</td><td class="best">11.59</td><td>48.82</td></tr>
+                  <tr><td>GRPO</td><td>RLVR</td><td>31.40</td><td>0.61</td><td>34.05</td></tr>
+                  <tr class="onq"><td>OnQ</td><td>Dynamic KL</td><td class="best">67.20</td><td>10.98</td><td class="best">49.58</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p>
+              Qwen3-1.7B W2, 400 steps from a shared cold start on DeepScaleR mathematics problems. Dynamic KL achieves the highest three-benchmark average and the best MATH-500 and MMLU-Redux scores. Relying only on teacher supervision, it outperforms OPD + GRPO and GRPO on all three benchmarks.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== 7 ===================== -->
+      <section id="contributions">
+        <h2><span class="no">7</span>Contributions</h2>
+        <ol class="contrib">
+          <li><b>Two challenges.</b> We identify trajectory divergence and distributional misalignment as two challenges that limit low-bit reasoning recovery.</li>
+          <li><b>OnQ.</b> We present OnQ, a low-bit recovery pipeline that combines on-policy distillation and candidate-wise Dynamic KL, starting from block-wise calibration.</li>
+          <li><b>Results.</b> OnQ achieves the highest nine-benchmark average in all six settings spanning Qwen3-1.7B, 4B, and 8B at 2 and 3 bits, improving the Qwen3-8B average at 2 bits by 10.26 points over the strongest baseline. It produces shorter responses with fewer repetitive errors, and it outperforms fixed-response distillation.</li>
+        </ol>
+        <div class="prose"><p>These results establish training on self-generated trajectories as an effective route to recovering reasoning under aggressive quantization.</p></div>
+      </section>
+
+      <section id="models">
+        <h2>Models</h2>
+        <p>The OnQ checkpoints for all six settings are on Hugging Face (<a href="https://huggingface.co/collections/Ryannnnnnz/onq-6acf370a0ea75a4cf7f5c2f9">collection</a>).</p>
+        <div class="panel">
+          <div class="table-wrap">
+            <table class="res compact">
+              <thead><tr><th>Base model</th><th>2-bit (W2)</th><th>3-bit (W3)</th></tr></thead>
+              <tbody>
+              <tr><td>Qwen3-1.7B</td><td><a href="https://huggingface.co/Ryannnnnnz/OnQ-Qwen3-1.7B-W2">OnQ-Qwen3-1.7B-W2</a></td><td><a href="https://huggingface.co/Ryannnnnnz/OnQ-Qwen3-1.7B-W3">OnQ-Qwen3-1.7B-W3</a></td></tr>
+              <tr><td>Qwen3-4B</td><td><a href="https://huggingface.co/Ryannnnnnz/OnQ-Qwen3-4B-W2">OnQ-Qwen3-4B-W2</a></td><td><a href="https://huggingface.co/Ryannnnnnz/OnQ-Qwen3-4B-W3">OnQ-Qwen3-4B-W3</a></td></tr>
+              <tr><td>Qwen3-8B</td><td><a href="https://huggingface.co/Ryannnnnnz/OnQ-Qwen3-8B-W2">OnQ-Qwen3-8B-W2</a></td><td><a href="https://huggingface.co/Ryannnnnnz/OnQ-Qwen3-8B-W3">OnQ-Qwen3-8B-W3</a></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="bibtex">
+        <h2>BibTeX</h2>
+<pre class="bib"><code>@misc{zheng2026rightonq,
+  title={Right On Q: Recovering Reasoning under Quantization via Self-Generated Trajectories},
+  author={Boyuan Zheng and Jing Xiong and Chenwei Wu and Hui Shen and Zesen Zhao and Hei Ting Una Chan and Xueshen Liu and Zhen Zhang and Liyue Shen and Zechun Liu and Z. Morley Mao},
+  year={2026},
+  eprint={2610.29378},
+  archivePrefix={arXiv},
+  primaryClass={cs.CL},
+  url={https://arxiv.org/abs/2610.29378}
+}</code></pre>
+      </section>
+
+    </article>
+
+  <footer class="foot">The animated-trace idea is inspired by Lotfi et al.'s <a href="https://sanaelotfi.github.io/blog/quantized-reasoning-models/">post on quantized reasoning models</a>.</footer>
+</div>
+</main>
+
+<div class="tooltip" id="tooltip"></div>
+<script src="static/js/data.js?v=18"></script>
+<script src="static/js/site.js?v=18"></script>
+</body>
+</html>
