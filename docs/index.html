@@ -7,7 +7,7 @@
   <title>Right On Q: Recovering Reasoning under Quantization</title>
   <meta name="description" content="OnQ recovers reasoning in 2- and 3-bit LLMs by training the quantized student on its own generated trajectories with full-precision teacher supervision and candidate-wise Dynamic KL.">
   <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
-  <link rel="stylesheet" href="static/css/site.css?v=19">
+  <link rel="stylesheet" href="static/css/site.css?v=20">
   <script>
     window.MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }, svg: { fontCache: 'global' } };
   </script>
@@ -132,7 +132,7 @@
         <figure>
           <div class="traces" id="streams"></div>
           <figcaption>
-            <b>Figure 3. Excerpts from the Figure 1 responses.</b> Highlighted: the correct answer; red: text inside a loop; ✂: omitted text. Everything else is verbatim model output.
+            <b>Figure 3. Excerpts from the Figure 1 responses.</b> Highlighted: the correct answer; red: text inside a loop; dashed rules: omitted text. Everything else is verbatim model output. Scroll inside a panel to read it from the top.
             ReasoningQAT finds 9 and keeps "checking" by listing multiples of 5 far past 42; BitDistiller convinces itself that the standard formula is wrong and repeats the same clause for over 28,000 tokens.
           </figcaption>
         </figure>
@@ -424,7 +424,7 @@
 </main>
 
 <div class="tooltip" id="tooltip"></div>
-<script src="static/js/data.js?v=19"></script>
-<script src="static/js/site.js?v=19"></script>
+<script src="static/js/data.js?v=20"></script>
+<script src="static/js/site.js?v=20"></script>
 </body>
 </html>

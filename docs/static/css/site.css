@@ -221,11 +221,13 @@ figcaption b { color: var(--fg); font-weight: 600; }
 .trace-head { padding: 10px 14px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 1px; }
 .trace-head b { font-size: 14px; }
 .trace-head span { font-size: 11.5px; color: var(--faint); font-family: var(--mono); }
-.trace-body { height: 300px; overflow-y: auto; padding: 26px 14px 12px; font-family: var(--mono); font-size: 12px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; color: var(--muted);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 28px); mask-image: linear-gradient(to bottom, transparent 0, #000 28px); }
+.trace-body { height: 300px; overflow-y: auto; padding: 18px 16px 14px; font-family: var(--mono); font-size: 12px; line-height: 1.65; white-space: pre-wrap; word-break: break-word; color: var(--muted);
+  scrollbar-width: none; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18px); mask-image: linear-gradient(to bottom, transparent 0, #000 18px); }
+.trace-body::-webkit-scrollbar { display: none; }
 .trace-body .ans { background: var(--ok-tint); color: var(--ok); border-radius: 3px; padding: 0 3px; font-weight: 700; }
 .trace-body .loop { color: var(--bad); }
-.trace-body .cut { color: var(--faint); }
+.trace-body .cut { display: flex; align-items: center; gap: 10px; margin: 10px 0; font-family: var(--sans); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
+.trace-body .cut::before, .trace-body .cut::after { content: ''; flex: 1; border-top: 1px dashed var(--line); }
 .trace-foot { padding: 8px 14px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 11.5px; color: var(--faint); }
 
 /* ---------- Dynamic KL explorer ---------- */

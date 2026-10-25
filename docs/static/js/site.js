@@ -206,13 +206,13 @@
 
   /* ===================== Figure 3: trace excerpts ===================== */
   (function () {
-    var CUT = ['cut', ' ✂ \n'];
+    var CUT = ['cut', 'omitted'];
     var panels = [
       {
         title: 'ReasoningQAT · 2-bit', meta: '9 at token 358 · loop from 963',
         segs: [
           ['', 'Next, 42 divided by 25. 25 times 1 is 25, 25 times 2 is 50, which is more than 42. So 1. So that\'s 1. So total so far is 8 + 1 = '],
-          ['ans', '9'], ['', '.\n'], CUT,
+          ['ans', '9'], ['', '.'], CUT,
           ['', 'So the answer is '], ['ans', '9'],
           ['', ' zeros at the end of 42!.\n\nBut wait, let me check with another way. Let me list out the multiples of 5 in 1-42:\n\n'],
           ['loop', 'Multiples of 5: 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, ']
@@ -226,7 +226,7 @@
         segs: [
           ['', 'Wait, the formula is that the number of trailing zeros in n! is equal to the number of times 5 divides into n!.'],
           CUT,
-          ['', 'But for n=10, the number of 5s is 1, so the number of trailing zeros is 1. But according to the formula, floor(10/5) + floor(10/25) = 2. Therefore, there\'s a problem here.\n'],
+          ['', 'But for n=10, the number of 5s is 1, so the number of trailing zeros is 1. But according to the formula, floor(10/5) + floor(10/25) = 2. Therefore, there\'s a problem here.'],
           CUT
         ],
         more: function () { return 'but in reality, the number of 5s is floor(n/5) + floor(n/25) + ... '; }, loops: 4,
@@ -238,9 +238,9 @@
         segs: [
           ['', 'For 5: 42 divided by 5 is 8.4, so 8.4, so floor is 8. Then 42/25 is 1.68, floor is 1. So total 8+1='],
           ['ans', '9'],
-          ['', '. Correct.\n\nFor 2: 42 divided by 2 is 21, then 42/4 is 10.5, floor 10, 42/8 is 5.25, floor 5, 42/16 is 2.625, floor 2, 42/32 is 1.3125, floor 1, then 42/64 is 0. So 21+10+5+2+1=29. Correct. So yes, 29.\n'],
+          ['', '. Correct.\n\nFor 2: 42 divided by 2 is 21, then 42/4 is 10.5, floor 10, 42/8 is 5.25, floor 5, 42/16 is 2.625, floor 2, 42/32 is 1.3125, floor 1, then 42/64 is 0. So 21+10+5+2+1=29. Correct. So yes, 29.'],
           CUT,
-          ['', 'So, the number of 2s is 29, the number of 5s is 9, so 9 zeros.\n'],
+          ['', 'So, the number of 2s is 29, the number of 5s is 9, so 9 zeros.'],
           CUT,
           ['', '**Final Answer**\nThe number of zeros at the end of $42!$ is \\boxed{'], ['ans', '9'], ['', '}.']
         ],
